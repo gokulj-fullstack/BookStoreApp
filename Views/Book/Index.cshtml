@@ -1,0 +1,102 @@
+@model IEnumerable<BookStoreApp.Models.Book>
+
+@{
+    ViewData["Title"] = "Books";
+}
+
+<div class="container mt-4">
+
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="fw-bold mb-0">📚 Book Management</h2>
+            <small class="text-muted">Manage all your books in one place</small>
+        </div>
+        <a asp-action="Create" class="btn btn-success shadow-sm">
+            ➕ Add Book
+        </a>
+    </div>
+
+    <!-- Search Box -->
+    <div class="card shadow-sm border-0 mb-4">
+        <div class="card-body">
+            <input type="text" id="searchInput" class="form-control"
+                   placeholder="🔍 Search books by title, author..." onkeyup="searchTable()" />
+        </div>
+    </div>
+
+    <!-- Table Card -->
+    <div class="card shadow border-0">
+        <div class="card-body p-0">
+
+            <table class="table table-hover align-middle mb-0" id="bookTable">
+                <thead class="table-dark">
+                    <tr>
+                        <th>📖 Title</th>
+                        <th>🔢 ISBN</th>
+                        <th>📅 Published</th>
+                        <th>💰 Price</th>
+                        <th>👤 Author</th>
+                        <th class="text-center">⚙️ Actions</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td class="fw-semibold">@item.Title</td>
+
+                            <td>@item.ISBN</td>
+
+                            <td>
+                                <span class="badge bg-light text-dark">
+                                    @item.PublishedDate.ToShortDateString()
+                                </span>
+                            </td>
+
+                            <td>
+                                <span class="badge bg-success">
+                                    ₹ @item.Price
+                                </span>
+                            </td>
+
+                            <td>
+                                <span class="badge bg-primary">
+                                    @item.Author?.Name
+                                </span>
+                            </td>
+
+                            <td class="text-center">
+                                <a asp-action="Edit" asp-route-id="@item.Id"
+                                   class="btn btn-sm btn-warning me-1">✏️</a>
+
+                                <a asp-action="Details" asp-route-id="@item.Id"
+                                   class="btn btn-sm btn-info me-1">ℹ️</a>
+
+                                <a asp-action="Delete" asp-route-id="@item.Id"
+                                   class="btn btn-sm btn-danger">🗑️</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+
+            </table>
+
+        </div>
+    </div>
+
+</div>
+
+<!-- SEARCH SCRIPT -->
+<script>
+    function searchTable() {
+        let input = document.getElementById("searchInput").value.toLowerCase();
+        let rows = document.querySelectorAll("#bookTable tbody tr");
+
+        rows.forEach(row => {
+            let text = row.innerText.toLowerCase();
+            row.style.display = text.includes(input) ? "" : "none";
+        });
+    }
+</script>
